@@ -5,3 +5,11 @@
     margin: 0 0 5px;
     padding: 3px;
 }
+
+.side-box .h5, .side-box h5 {
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+.pager {
+    margin: 3px 0;
+}
