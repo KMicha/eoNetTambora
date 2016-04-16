@@ -1,46 +1,84 @@
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>EONET meets Tambora</title>
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet" >
-    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css" type="text/css" rel="stylesheet" >
-    <link href="//cdnjs.cloudflare.com/ajax/libs/ol3/3.15.1/ol.css" type="text/css" rel="stylesheet">
-	<link href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css" type="text/css" rel="stylesheet"/>
-	<link href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick-theme.css" type="text/css" rel="stylesheet"/>
-	<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
-	  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-	<link href="./css/spaceapp.css" type="text/css" rel="stylesheet">
-</head>
+ <head>
+  <meta charset="utf-8">
+   <title>EONET meets Tambora</title>
+   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet" >
+   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css" type="text/css" rel="stylesheet">
+   <link href="//cdnjs.cloudflare.com/ajax/libs/ol3/3.15.1/ol.css" type="text/css" rel="stylesheet">
+   <link href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.css" type="text/css" rel="stylesheet"/>
+   <link href="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick-theme.css" type="text/css" rel="stylesheet"/>
+   <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
+   <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+   <link href="css/spaceapp.css" type="text/css" rel="stylesheet">
+ </head>
 
 <body>
-    <div class="container-fluid">
-        <h4><a href="http://eonet.sci.gsfc.nasa.gov/"><b>E</b><img src="./images/nasa.ico" alt="O" style="position:relative; top:-2px;"/>Net</a> 
+ <div class="container-fluid">
+  <div class="row">
+   <div class="col-md-6 "> <!-- eoEvents Upper-Left Corner -->
+    <!-- Left and right controls -->
+    <ul class = "pager">
+     <span style="font-size:175%"><a href="http://eonet.sci.gsfc.nasa.gov/"><b>E</b><img src="images/nasa.ico" alt="O"   style="position:relative; top:-2px;"/>Net</a> 
 		  meets 
-		    <a href="https://www.tambora.org">Tamb<img src="./images/tambora.ico" alt="O"  style="position:relative; top:-2px;"/>ra</a></h4>	
-        <div class="row">
-		
-            <span class="eo-events"></span>
 
-	    </div>				
-        <div class="row">
-            <div class="col-md-4 ">2
-			</div>
-		    <div class="col-md-4 ">3
-			</div>
-		    <div class="col-md-4 ">4
-			</div>
-	    </div>	
-	</div>
-	 
+      <a href="https://www.tambora.org">Tamb<img src="images/tambora.ico" alt="O"  style="position:relative; top:-2px;"/>ra</a></span>
+     <li class = "next"><a href = "#myCarousel" data-slide = "next">Older &rarr;</a></li>
+     <li class = "next"><a href = "#myCarousel" data-slide = "prev">&larr; Newer</a></li>   
+    </ul>
 
+    <div id="myCarousel" class="carousel slide">
+     <!-- Wrapper for slides -->
+     <div class="carousel-inner eo-events" role="listbox"></div>
+    </div>
+   </div> <!-- end md-6 -->
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ol3/3.15.1/ol.js" type="text/javascript"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>	
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" type="text/javascript"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js" type="text/javascript"></script>
-    <script src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js" type="text/javascript"></script>
-    <script src="./js/spaceapp.js" type="text/javascript"></script>	
+   <div class="col-md-6"> <!-- Map & Globe Upper-Right Corner -->
+    <ul class="nav nav-tabs">
+     <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+     <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+    </ul>
+    <div class="tab-content">
+     <div id="home" class="tab-pane fade in active">
+      <h3>HOME</h3>
+      <p>Some content. Maps</p>
+     </div>
+     <div id="menu1" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Some content in menu 1. Globe</p>
+     </div>
+    </div>
+   </div> <!-- end md-6 -->
+  </div> <!-- end row -->
+
+	
+  <div class="row">
+   <div class="col-md-6 ">
+     Empty now
+   </div>
+  </div> <!-- end row -->
+				
+  <div class="row">
+   <div class="col-md-4 ">
+    2
+   </div>
+   <div class="col-md-4 ">
+    3
+   </div>
+   <div class="col-md-4 ">
+    4
+   </div>
+  </div> <!-- end row -->	
+
+ </div> <!-- end container-fluid -->
+
+ <script src="//cdnjs.cloudflare.com/ajax/libs/ol3/3.15.1/ol.js" type="text/javascript"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>	
+ <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" type="text/javascript"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js" type="text/javascript"></script>
+ <script src="//cdn.jsdelivr.net/jquery.slick/1.5.9/slick.min.js" type="text/javascript"></script>
+ <script src="js/spaceapp.js" type="text/javascript"></script>	
+
 </body>
 </html>
