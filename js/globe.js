@@ -1,7 +1,7 @@
 {
   var scene = null;
   var camera = null;
-  var urlAsset = "./"; 
+  var urlAsset = "."; 
 
 function drawEarth(scene) {
   var geometry = new THREE.SphereGeometry( 250 , 40, 40 );
