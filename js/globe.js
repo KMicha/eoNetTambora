@@ -4,6 +4,7 @@
   var urlAsset = "."; 
 
 function drawEarth(scene) {
+  THREE.ImageUtils.crossOrigin = '';
   var geometry = new THREE.SphereGeometry( 250 , 40, 40 );
   var earthColor = THREE.ImageUtils.loadTexture(urlAsset + '/images/earth/earthmap1k.jpg');
   earthColor.minFilter = THREE.LinearFilter;
