@@ -1,11 +1,12 @@
 // tmb-events
-var tmbServer = "https://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/json";
-var tmbLimit  = 120;	
+var tmbServer = "http://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/eonet";
+var tmbLimit  = 120;
+var tmbDistance = 500; // km	
 var tmbGrouping = 6;
 var tmbData = null;
 
 
-// https://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/json?s[lng]=20&s[lat]=10
+// http://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/eonet?s[lng]=20&s[lat]=10
 
 function getEoNetData() {
   return eoNetData;
@@ -19,6 +20,7 @@ function loadTmbEvents(longitude, latitude, param, colorParent) {
     $.getJSON( tmbServer + "?" + param, {
         's[lng]': longitude,
         's[lat]': latitude,
+		's[mxd]': tmbDistance,
         limit: tmbLimit
         })
     .done(function( data ) {	

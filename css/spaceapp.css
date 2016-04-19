@@ -13,3 +13,20 @@
 .pager {
     margin: 3px 0;
 }
+
+html body {
+ font-family: "Merriweather Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.urTabContent {
+ height: 348px; 
+ margin: 0 22px;
+}
+
+#olMap .layer-switcher.shown {
+	font-size: 70%;	
+    max-height: 300px;
+}
+
+
+
