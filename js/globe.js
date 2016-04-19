@@ -86,19 +86,34 @@ function drawEvents(scene, data) {
 var addEventsToGlobe = function(data) {
 	drawEvents(scene, data);
 }
+
 var adjustCamera = function(longitude, latitude) {
-	
   var lg = longitude;
   var lt = 90.0-latitude;  
   var r = 2000.0;		 
   var x = r*Math.sin(lt*Math.PI/180)*Math.cos(lg*Math.PI/180);
-  var y = r*Math.sin(lt*Math.PI/180)*Math.sin(lg*Math.PI/180);
-  var z = r*Math.cos(lt*Math.PI/180);
+  var y = r*Math.cos(lt*Math.PI/180);
+  var z = 0-r*Math.sin(lt*Math.PI/180)*Math.sin(lg*Math.PI/180);
 
-  camera.position.z = 0-y; // move away to see coord center
-  camera.position.x = x;
-  camera.position.y = z;
-
+  if ('#globe' == getCurrentTabId()) {  
+    var camCurr = { x : camera.position.x, y: camera.position.y, z: camera.position.z};
+    var camEnd = { x : x, y: y, z: z };
+    var tweenCam = new TWEEN.Tween(camCurr).to(camEnd, 2000);
+    tweenCam.easing(TWEEN.Easing.Cubic.InOut);
+    tweenCam.onUpdate(function(){
+      camera.position.x = camCurr.x;
+      camera.position.y = camCurr.y;
+	  camera.position.z = camCurr.z;
+	  camera.up.x = 0;
+      camera.up.y = 1;
+      camera.up.z = 0;
+    });
+    tweenCam.start();
+  } else {
+    camera.position.x = x;
+    camera.position.y = y;
+	camera.position.z = z;	  
+  }
 }
 	
 
@@ -134,8 +149,11 @@ if (eoNetData && eoNetData.hasOwnProperty('events')) {
 }
 
 var render = function () { 
+
     requestAnimationFrame(render); 
+	TWEEN.update();	
     controls.update();
+
     renderer.render(scene, camera); 
 };
 

@@ -4,6 +4,7 @@ var eoNetLimit  = 120;
 var eoNetOffset = 0;
 var eoNetGrouping = 6;
 var eoNetData = null;
+var eoNetLayers = null;
 
 function getEoNetData() {
   return eoNetData;
@@ -13,25 +14,63 @@ function getEoNetEventByKey(key) {
   return eoNetData.events[key];
 }
 
-function loadEoNetEvents(mode) {
-    $.getJSON( eoNetServer + "/events", {
+// http://eonet.sci.gsfc.nasa.gov/api/v2.1/categories  // :get all categories
+// http://eonet.sci.gsfc.nasa.gov/api/v2.1/categories/8?status=open // :get all events of one category..
+// http://eonet.sci.gsfc.nasa.gov/api/v2.1/events?status=open       // :get events of all categories..
+
+function loadEoNetEvents(mode, category) {
+	$command = 'events';
+	if ('all' == mode) {
+      $.getJSON( eoNetServer + "/" + $command, {
+        status: 'open',
+        limit: eoNetLimit
+        })
+      .done(function( data ) {	
+        eoNetData = data;
+        $.getJSON( eoNetServer + "/" + $command, {
+          status: 'closed',
+          limit:  (eoNetLimit - eoNetData.events.length)
+        })
+        .done(function( data ) {	
+          eoNetData.events = eoNetData.events.concat(data.events);
+	      handleNewEoEvents();		
+        });	
+      });
+	} else {
+    $.getJSON( eoNetServer + "/" + $command, {
         status: mode,
         limit: eoNetLimit
         })
     .done(function( data ) {	
         eoNetData = data;
-	processEoNetEvents();
-        redrawEoNetEvents();	
-        addEventsToGlobe(eoNetData.events);		
+	    handleNewEoEvents();
     });
+	}
+}
+
+function loadEoNetLayers(categoryId) {
+  $.getJSON( eoNetServer + "/layers/" + categoryId, {
+  })
+  .done(function( data ) {	
+    eoNetLayers = data;
+    //handleNewEoLayers();
+  });	
+}
+
+function handleNewEoEvents() {
+  processEoNetEvents();
+  redrawEoNetEvents();	
+  addEventsToGlobe(eoNetData.events);		
+  handleActiveEoEvent(eoNetData.events[0])
 }
 
 
 function processEoNetEvents() {
   $.each( eoNetData.events, function( key, event ) {
     var category = getCategoryData(event);
+    eoNetData.events[key].from = 'eonet';	 
     eoNetData.events[key].type = category.title;
-    eoNetData.events[key].from = 'eonet';
+    eoNetData.events[key].catId = category.catId;	
     eoNetData.events[key].color = category.color;
     eoNetData.events[key].param = category.param;
     eoNetData.events[key].image = category.image;	
@@ -129,17 +168,31 @@ function getGeometryData(event) {
       };
 }
 
+function checkForSubstrings(test, subStrList)
+{
+	testString = test.toLowerCase(); 
+	for (subIndex in subStrList) {
+		substring = subStrList[subIndex].toLowerCase(); 
+		if (testString.indexOf(substring) > -1) {
+			return true;
+		}
+	}
+	return false;
+}
+
 function getCategoryData(event)
 {
   var image = "unknown.jpg";
   var title = "Unknown";
   var param = ""; 
   var color = "#000000";
+  var catId = 0;
   {
      var category = event.categories[0];
      if (category.hasOwnProperty('id') && category.hasOwnProperty('title')) 
      {
-       var title = category.title; 
+       title = category.title; 
+	   catId = category.id;
        switch(category.id) {
        case 6:
         param = "c[va]=82,86";
@@ -164,7 +217,7 @@ function getCategoryData(event)
        case 10:
         param = "c[va]=10,11,12";
         image = "storm.jpg";
-        color = "#999999";
+        color = "#006400";
         break;
        case 12:
         param = "c[nd]=89";
@@ -194,12 +247,24 @@ function getCategoryData(event)
        case 17:
         param = "c[nd]=116";
         image = "snow.jpg";
-        color = "#FFFFFF";
+        color = "#999999";
         break;
        case 18:
         param = "c[va]=4,7,5,6";
         image = "extremes.jpg";
         color = "#FF00FF";
+		if (checkForSubstrings(event.title, ['heat','hot','warm'])) {
+          param = "c[va]=5,6";
+          image = "heat.jpg";
+          color = "#FF7F50";
+          title = "Heat Wave";		  
+		} 
+		if (checkForSubstrings(event.title, ['cold','snow','ice', 'frost'])) {
+          param = "c[va]=4,7";
+          image = "cold.jpg";
+          color = "#6495ED";	
+          title = "Cold Snap";		  
+		}
         break;
        case 19:
         param ="c[nd]=4";
@@ -214,7 +279,8 @@ function getCategoryData(event)
       param: param,
       image: image,
       color: color,
-      title: title
+      title: title,
+	  catId: catId
       };
 }
 

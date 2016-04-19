@@ -1,5 +1,5 @@
 $(document).ready(function() {
-   loadEoNetEvents("closed");	
+   loadEoNetEvents("all");	
 });
 
 function buildEoNetEvent(key, event) {
@@ -24,7 +24,6 @@ function buildEoNetEvent(key, event) {
 }
 
 function redrawEoNetEvents() {
-	
   $( ".eo-events" ).html('');
   var eoSize = 0;
   var sliderItem = "<div class='item active'>";
@@ -43,7 +42,6 @@ function redrawEoNetEvents() {
     sliderItem += "</div>";
     $( ".eo-events" ).append(sliderItem);
   }
-	
   $('.eo-events a').bind('click', selectEoEvent);
 }
 
@@ -51,8 +49,25 @@ function selectEoEvent() {
   var element = $(this);
   var key = parseInt(element.attr("data-key"));	
   var eoEvent = getEoNetEventByKey(key);
+  handleActiveEoEvent(eoEvent);
+}
+
+function handleActiveEoEvent(eoEvent) {
   adjustCamera(eoEvent.longitude, eoEvent.latitude);
+  adjustMap(eoEvent.longitude, eoEvent.latitude);
+  loadEoNetLayers(eoEvent.catId);
   loadTmbEvents(eoEvent.longitude, eoEvent.latitude, eoEvent.param, eoEvent.color);
 }
 
+{
+var currTab = '#globe';
 
+var getCurrentTabId = function(data) {
+	return currTab;
+}
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  currTab = $(e.target).attr("href") // activated tab
+  $(currTab).change();
+});	
+}
