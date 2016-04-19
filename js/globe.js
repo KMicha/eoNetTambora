@@ -71,9 +71,15 @@ function drawEvents(scene, data) {
     latitude = dataRow.latitude;
     longitude = dataRow.longitude;
     opacity = 0.7;
+    offset = 10;
+    size = 5;
+    if('tambora' == dataRow.from) {
+      opacity = 0.5;
+      offset = 20;
+      size = 3;
+    }
     color = dataRow.color;
-
-	drawEvent(scene,'name',longitude,latitude,10,5,color, opacity);
+    drawEvent(scene,'name',longitude,latitude,offset,size,color, opacity);
   }	
 }
 
