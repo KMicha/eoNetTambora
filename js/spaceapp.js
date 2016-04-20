@@ -2,6 +2,19 @@ $(document).ready(function() {
    loadEoNetEvents("all");	
 });
 
+
+function checkForSubstrings(test, subStrList)
+{
+  testString = test.toLowerCase(); 
+  for (subIndex in subStrList) {
+    substring = subStrList[subIndex].toLowerCase(); 
+    if (testString.indexOf(substring) > -1) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function buildEoNetEvent(key, event) {
  eoItem = "<div class='side-box col-md-4 col-xs-4' style='height:170px;'>";
   var glyph = "<span class='glyphicon glyphicon-record' style='color: "+event.color+";'></span> ";
@@ -55,7 +68,8 @@ function selectEoEvent() {
 function handleActiveEoEvent(eoEvent) {
   adjustCamera(eoEvent.longitude, eoEvent.latitude);
   adjustMap(eoEvent.longitude, eoEvent.latitude);
-  loadEoNetLayers(eoEvent.catId);
+  adjustToBox(eoEvent.ll,eoEvent.ur);
+  loadEoNetLayers(eoEvent.catId, eoEvent); 
   loadTmbEvents(eoEvent.longitude, eoEvent.latitude, eoEvent.param, eoEvent.color);
 }
 

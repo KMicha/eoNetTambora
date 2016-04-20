@@ -23,9 +23,9 @@ html body {
  margin: 0 22px;
 }
 
-#olMap .layer-switcher.shown {
+#olMapEvents, #olMapSatelite .layer-switcher.shown {
 	font-size: 70%;	
-    max-height: 300px;
+    max-height: 500px;
 }
 
 

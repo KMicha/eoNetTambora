@@ -37,7 +37,8 @@
    <div class="col-md-6"> <!-- Map & Globe Upper-Right Corner -->
     <ul class="nav nav-tabs">
      <li class="active"><a data-toggle="tab" href="#globe">Globe</a></li>
-     <li><a data-toggle="tab" href="#map">Map</a></li>	 
+     <li><a data-toggle="tab" href="#mapEvents">Map Events</a></li>	
+     <li><a data-toggle="tab" href="#mapSatelite">Map Satelite</a></li>		 
      <li><a data-toggle="tab" href="#about">About</a></li>
     </ul>
     <div id='tab-content' class="tab-content">
@@ -46,9 +47,14 @@
 	   <div id='rendering' class='urTabContent' s2tyle='height:348px; margin:0 22px;'></div>
      </div>
 	 <!-- Show Map -->
-     <div id="map" class="tab-pane fade">
-	   <div id="olMap" class="olMap urTabContent" s2tyle="height:348px; margin:0 22px;"></div>
+     <div id="mapEvents" class="tab-pane fade">
+	   <div id="olMapEvents" class="olMapEvents urTabContent" s2tyle="height:348px; margin:0 22px;"></div>
      </div>
+	 <!-- Show Map -->
+     <div id="mapSatelite" class="tab-pane fade">
+	   <div id="olMapSatelite" class="olMapSatelite urTabContent" s2tyle="height:348px; margin:0 22px;"></div>
+     </div>	 
+	 
      <!-- Show About -->
      <div id="about" class="tab-pane fade">
 	   <div class='urTabContent'>
