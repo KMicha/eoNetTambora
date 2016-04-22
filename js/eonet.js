@@ -72,9 +72,9 @@ function handleNewEoLayers() {
     var layer = layerList[layerIndex]; 
     var mapTimeStr = extractMapTime(eoEvent.timeMap);
     var mapUrl = layer.serviceUrl + "?time=" + mapTimeStr; 
+	$('#olControlDate .currentDay').html(mapTimeStr);
     var layerParam = layer.parameters[0];
     if (layer.serviceTypeId == "WMTS_1_0_0") {
-      visibility = false;
       addSateliteLayer(mapUrl, layer.name, layerParam.FORMAT, layerParam.TILEMATRIXSET);
     }
   }
@@ -89,7 +89,6 @@ function handleNewEoEvents() {
   activeEoEvent = eoNetData.events[0];	
   handleActiveEoEvent();
 }
-
 
 function processEoNetEvents() {
   $.each( eoNetData.events, function( key, event ) {
@@ -106,17 +105,18 @@ function processEoNetEvents() {
       eoNetData.events[key].longitude = geometry.longAvg;
       eoNetData.events[key].ll = [geometry.longMin, geometry.latMin];
       eoNetData.events[key].ur = [geometry.longMax, geometry.latMax];
-      eoNetData.events[key].timeStart = geometry.timeMin;
-      eoNetData.events[key].timeEnd = geometry.timeMax;
-      eoNetData.events[key].timeMap = geometry.timeMin;
+  	  eoNetData.events[key].timeStart = new Date();
+      eoNetData.events[key].timeStart.setDate(geometry.timeMin.getDate());
+	  eoNetData.events[key].timeEnd = new Date();
+      eoNetData.events[key].timeEnd.setDate(geometry.timeMax.getDate());
+	  eoNetData.events[key].timeMap = new Date();
+      eoNetData.events[key].timeMap.setDate(geometry.timeMin.getDate());
       eoNetData.events[key].days = (geometry.timeMax - geometry.timeMin) / (1000 * 60 * 60 * 24);
       eoNetData.events[key].year = geometry.timeMin.getFullYear();
       eoNetData.events[key].month = 1 + geometry.timeMin.getMonth();
     }
   });
 }
-
-
 
 function getGeometryData(event) {
   var timeMin = 10E14;

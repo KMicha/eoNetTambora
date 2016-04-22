@@ -1,10 +1,15 @@
 // tmb-events
-var tmbServer = "https://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/eonet";
+var tmbBase   = "https://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/";
+var tmbServer = tmbBase + "grouping/event/eonet";
+var tmbViewEvent = tmbBase + "grouping/event/show?event_id="; 
 var tmbLimit  = 120;
-var tmbDistance = 1000; // km	
+var tmbDistance = 2000; // km	
 var tmbGrouping = 6;
 var tmbData = null;
 
+$(document).ready(function () {
+  initTamboraCharts();
+});	
 
 // http://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/eonet?s[lng]=20&s[lat]=10
 
@@ -26,9 +31,12 @@ function loadTmbEvents(longitude, latitude, param, colorParent) {
         })
     .done(function( data ) {
         tmbData = data;
+		$('#tmbCount').html(data.total);
 	processTmbEvents(colorParent);
         //redrawTmbEvents();	
-        addEventsToGlobe(tmbData.events);		
+        addEventsToGlobe(tmbData.events);	
+		updateChartData(tmbData.events);
+		
     });
 	
 }
@@ -46,181 +54,205 @@ function processTmbEvents(colorParent) {
     if (geometry) {
       tmbData.events[key].latitude = geometry.latAvg;
       tmbData.events[key].longitude = geometry.longAvg;
-      eoNetData.events[key].timeStart = geometry.timeMin;
-      eoNetData.events[key].timeEnd = geometry.timeMax;
-      eoNetData.events[key].days = (geometry.timeMax - geometry.timeMin) / (1000 * 60 * 60 * 24);
-      eoNetData.events[key].year = geometry.timeMin.getFullYear();
-      eoNetData.events[key].month = 1 + geometry.timeMin.getMonth();
+      tmbData.events[key].timeStart = geometry.timeMin;
+      tmbData.events[key].timeEnd = geometry.timeMax;
+      tmbData.events[key].days = (geometry.timeMax - geometry.timeMin) / (1000 * 60 * 60 * 24);
+      tmbData.events[key].year = geometry.timeMin.getFullYear();
+      tmbData.events[key].month = 1 + geometry.timeMin.getMonth();
     }
   });
 }
 
-
-/*
-function getGeometryData(event) {
-  var timeMin = 10E14;
-  var timeMax = -10E14;
-  var latMin = 1000.0;
-  var latMax = -1000.0;
-  var longMin = 1000.0;
-  var longMax = -1000.0;
-  var latAvg = 0.0;
-  var longAvg = 0.0;  
-  var offset = 1.0;
-  var counter = 0.0;
-	
-  var calculateTimestamps = function (timestamp) {
-    var newTime = new Date(timestamp).getTime();
-    var time2 = Date.parse(timestamp);
-    if (newTime > timeMax) {
-      timeMax = newTime;
-    }
-    if (newTime < timeMin) {
-      timeMin = newTime;
-    }
-  }
-
-  var calculateCoordinates = function (longitude, latitude) {
-    counter += 1.0;  
-    if (latitude + offset > latMax) {
-     latMax = latitude + offset;
-    }
-    if (latitude - offset < latMin) {
-     latMin = latitude - offset;
-    }
-    if (longitude + offset > longMax) {
-     longMax = longitude + offset;
-    }
-    if (longitude - offset < longMin) {
-     longMin = longitude - offset;
-    }
-    latAvg += latitude;
-    longAvg += longitude;
-  }	
-	
-  for (gIndex in event.geometries) {
-    geometry = event.geometries[gIndex];
-    calculateTimestamps(geometry.date);	
-    if('Point' == geometry.type) {
-      var point = geometry.coordinates;
-      calculateCoordinates(point[0], point[1]);
-    }
-    if('Polygon' == geometry.type) {
-      for (lIndex in geometry.coordinates) {
-        list = geometry.coordinates[lIndex];
-        for(pIndex in list) {
-          var point = list[pIndex];
-          calculateCoordinates(point[0], point[1]);
-	}
-      }
-    }	 
-  }
-  
-  if (0.0 == counter) {
-    return null;
-  }
-  
-  return {
-      timeMin: timeMin,
-      timeMax: timeMax,
-      latMin: latMin,
-      latMax: latMax,
-      longMin: longMin,
-      longMax: longMax,
-      latAvg: latAvg / counter,
-      longAvg: longAvg / counter
-      };
-}
-*/
-
-/* Rename if needed seperatly !!
-function getCategoryData(event)
 {
-  var image = "unknown.jpg";
-  var title = "Unknown";
-  var param = ""; 
-  var color = "#000000";
-  {
-     var category = event.categories[0];
-     if (category.hasOwnProperty('id') && category.hasOwnProperty('title')) 
-     {
-       var title = category.title; 
-       switch(category.id) {
-       case 6:
-        param = "c[va]=82,86";
-        image = "drought.jpg";
-        color = "#CDC673";
-        break;
-       case 7:
-        param = "c[nd]=558,563,566,30";
-        image = "sandstorm.jpg";
-        color = "#FFFF00";
-        break;
-       case 8:
-        param = "c[nd]=90";
-        image = "fire.jpg";
-        color = "#FF0000";
-        break;
-       case 9:
-        param = "c[nd]=356,519,520,521,522";
-        image = "flood.jpg";
-        color = "#0000FF";
-        break;
-       case 10:
-        param = "c[va]=10,11,12";
-        image = "storm.jpg";
-        color = "#999999";
-        break;
-       case 12:
-        param = "c[nd]=89";
-        image = "volcano.jpg";
-        color = "#FF8800";
-        break;
-       case 13:
-        param = "c[nd]=74";
-        image = "color.jpg";
-        color = "#00FF00";
-        break;
-       case 14:
-        param = "c[nd]=309";
-        image = "landslide.jpg";
-        color = "#9932CC";
-        break;
-       case 15:
-        param = "c[nd]=637,638,648";
-        image = "ice.jpg";
-        color = "#00FFFF";
-        break;
-       case 16:
-        param = "c[nd]=298";
-        image = "earthquake.jpg";
-        color = "#DA70D6";
-        break;
-       case 17:
-        param = "c[nd]=116";
-        image = "snow.jpg";
-        color = "#FFFFFF";
-        break;
-       case 18:
-        param = "c[va]=4,7,5,6";
-        image = "extremes.jpg";
-        color = "#FF00FF";
-        break;
-       case 19:
-        param ="c[nd]=4";
-        image = "manmade.jpg";
-        color = "#000000";
-        break;
-      } 
-    }
-  }
 
-  return {
-      param: param,
-      image: image,
-      color: color,
-      title: title
-      };
+var daysChart = null;
+var monthChart = null;
+var yearChart = null;
+var distChart = null;
+var tmbEventTable = null;
+
+var chartData = null;
+
+var initTamboraCharts = function() {
+	
+  daysChart = dc.barChart('#days-chart');
+  monthChart = dc.pieChart('#month-chart');
+  yearChart = dc.barChart('#year-chart');
+  distChart = dc.barChart('#dist-chart');
+  tmbEventTable = dc.dataTable('.tmb-data-table');
+  // nasdaqCount = dc.dataCount('.dc-data-count');
+	
 }
-*/
 
+var updateChartData = function (events) {
+    chartData = []; 
+    events.forEach(function (event) {
+		var result = {
+			id: event.id,
+			start: event.timeStart,
+			year: event.year,
+			days: event.days,
+			month: event.month,
+			distance: event.distance,
+			location: event.location
+		};
+        chartData.push(result);
+    });	
+	
+    var ndx = crossfilter(chartData);
+    var all = ndx.groupAll();	
+	
+	// Date Dimension
+	var dimStart = ndx.dimension(function (d) {
+        return d.start;
+    });
+    // Dimension by month
+    var dimMonth = ndx.dimension(function (d) {
+        return d.month;
+    });	
+	var monthGroup = dimMonth.group();
+    // Dimension by days
+    var dimDays = ndx.dimension(function (d) {
+        return Math.round(d.days);
+    });	
+	var daysGroup = dimDays.group();
+    // Dimension by year
+    var dimYear = ndx.dimension(function (d) {
+        return  Math.round(d.year);
+		return 25 * Math.round(d.year / 25);
+    });	
+    var yearGroup = dimYear.group();	
+    // Dimension by distance
+    var dimDist = ndx.dimension(function (d) {
+		return 20 * Math.round(d.distance / 20);
+    });	
+    var distGroup = dimDist.group();
+	
+	
+	// MONTH
+	monthChart /* dc.pieChart('#quarter-chart', 'chartGroup') */
+     .width(180)
+     .height(180)
+     .radius(80)
+     .innerRadius(30)
+     .dimension(dimMonth)
+     .group(monthGroup);
+	
+    // DAYS	
+    daysChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
+        .width(420)
+        .height(180)
+        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .dimension(dimDays)
+        .group(daysGroup)
+        .elasticY(true)
+        // (_optional_) whether bar should be center to its x value. Not needed for ordinal chart, `default=false`
+        .centerBar(true)
+        // (_optional_) set gap between bars manually in px, `default=2`
+        .gap(1)
+        // (_optional_) set filter brush rounding
+        .round(dc.round.floor)
+        //.alwaysUseRounding(true)
+		.elasticX(true)
+        .x(d3.scale.log().domain([.5, 500]))
+        .renderHorizontalGridLines(true);
+
+    // Customize axes
+	daysChart.xAxis().tickFormat(
+        function (v) { return Math.round(v); });
+    daysChart.yAxis().ticks(5);		
+		
+	// YEAR
+    yearChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
+        .width(420)
+        .height(180)
+        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .dimension(dimYear)
+        .group(yearGroup)
+        .elasticY(true)
+        // (_optional_) whether bar should be center to its x value. Not needed for ordinal chart, `default=false`
+        .centerBar(true)
+        // (_optional_) set gap between bars manually in px, `default=2`
+        .gap(15)
+        // (_optional_) set filter brush rounding
+        .round(dc.round.floor)
+        //.alwaysUseRounding(true)
+		.elasticX(true)
+        .x(d3.scale.linear().domain([1200, 2200]))
+        .renderHorizontalGridLines(true);
+
+    // Customize axes
+	yearChart.xAxis().tickFormat(
+        function (v) { return 10*Math.round(v/10); });
+    yearChart.yAxis().ticks(5);	
+    yearChart.xUnits(function(){return 20;});	
+		
+	// Distance
+    distChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
+        .width(420)
+        .height(180)
+        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .dimension(dimDist)
+        .group(distGroup)
+        .elasticY(true)
+        // (_optional_) whether bar should be center to its x value. Not needed for ordinal chart, `default=false`
+        .centerBar(true)
+        // (_optional_) set gap between bars manually in px, `default=2`
+        .gap(1)
+        // (_optional_) set filter brush rounding
+        .round(dc.round.floor)
+        //.alwaysUseRounding(true)
+		.elasticX(true)
+        //.x(d3.scale.linear().domain([0, 2000]))
+		.x(d3.scale.log().domain([.5, 2000]))
+        .renderHorizontalGridLines(true);
+
+    // Customize axes
+	distChart.xAxis().tickFormat(
+        function (v) { return 10*Math.round(v/10); });
+    distChart.yAxis().ticks(5);			
+		
+		
+    // TABLE
+	var dynatable = $('#tmb-data-table').dynatable({
+                features: {
+                    pushState: false
+                },
+                dataset: {
+                    records: dimStart.top(Infinity),
+                    perPageDefault: 8,
+                    perPageOptions: [2, 3, 4, 5, 8, 10, 15, 20, 30, 50, 80, 100]
+                },
+				writers: {
+                  "start": function (record, tr) {
+                    return extractMapTime(record.start); },
+                  "days": function (record, tr) {
+                    return Math.round(record.days ); },					
+                  "distance": function (record, tr) {
+                    return Math.round(record.distance * 10.0) / 10.0; },
+				  "id": function (record, tr) {
+                    return "<a href='"+tmbViewEvent+record.id+"'><span class='glyphicon glyphicon-eye-open'></span></a>"; },
+                }
+            }).data('dynatable');	
+		
+    function RefreshTable() {
+                dc.events.trigger(function () {
+                    dynatable.settings.dataset.originalRecords = dimStart.top(Infinity);
+                    dynatable.process();
+                });
+            };	
+    for (var i = 0; i < dc.chartRegistry.list().length; i++) {
+                var chartI = dc.chartRegistry.list()[i];
+                chartI.on("filtered", RefreshTable);
+            }
+	RefreshTable();
+	
+	
+		
+	// Finally render all	
+    dc.renderAll();
+	dc.redrawAll();
+	
+}
+
+}

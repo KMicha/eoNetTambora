@@ -12,13 +12,15 @@ $('#mapEvents').change( function() {
 }); 
 
 
-$('.plusDay').click( function() {
+$('#olControlDate .plusDay').click( function() {
 	offsetSateliteDate(+1);
 }); 
-$('.minusDay').click( function() {
+$('#olControlDate .minusDay').click( function() {
 	offsetSateliteDate(-1);
 }); 
-
+$('#olControlDate .resetDay').click( function() {
+	resetSateliteDate();
+}); 
 
 {
 var olMapSatelite = null;	
@@ -30,6 +32,9 @@ var olMapEvents = null;
 var overlayGroup = null;
 var olCenter = ol.proj.fromLonLat([0, 0]);
 var olZoom = 5;	
+
+
+
 
 function createMapSatelite() {
 
@@ -46,7 +51,7 @@ function createMapSatelite() {
     })
   });
   sateliteBaseTile.set('identifier','geographic_base_layer');
-
+  sateliteBaseTile.setZIndex(0);
 
   sateliteBaseGroup = new ol.layer.Group({
    title: 'Base',
@@ -63,7 +68,10 @@ olMapSatelite = new ol.Map({
   controls: ol.control.defaults().extend([
     new ol.control.ScaleLine({
       units: 'degrees'
-    })
+    }),
+	new ol.control.Control({
+          element: $('#olControlDate').get(0)
+        })
   ]),
   layers: [ sateliteBaseGroup, sateliteOverlayGroup],
   target: 'olMapSatelite',
@@ -83,6 +91,48 @@ olMapSatelite = new ol.Map({
 }
 
 {
+
+
+var sateliteLayerSettings = new PouchDB('sateliteLayers');
+
+var storeLayerVisibility = function(layerName, visibility) {
+  var eoEvent = getActiveEoEvent();
+  var categoryId = eoEvent.categories[0].id;
+  var layerId = categoryId + ':' + layerName;
+  sateliteLayerSettings.get(layerId, function (error, doc) {
+    if (error) {
+	  var layerdb = {
+		"_id": layerId,
+		"name" : layerName, 
+		"visibility": visibility
+	  }
+	  sateliteLayerSettings.put(layerdb);
+    } else {
+      doc.visibility = visibility;
+	  sateliteLayerSettings.put(doc);
+    }
+  });
+}
+
+var queryLayerVisibility = function(layerName) {
+  var eoEvent = getActiveEoEvent();
+  var categoryId = eoEvent.categories[0].id;
+  var layerId = categoryId + ':' + layerName;
+ 
+  sateliteLayerSettings.get(layerId, function (error, doc) {
+    if (error) {
+	    var results = sateliteLayerSettings.query(function(doc) {emit(doc.name)}, {startkey: layerName, include_docs: true});	
+        return false;     
+      } else {
+      return doc.visibility ;
+    }
+
+  });
+  var z = 2;
+  	    var results = sateliteLayerSettings.query(function(doc) {emit(doc.name)}, {startkey: layerName, include_docs: true});	
+        return false;  	
+}
+
 var sateliteLayerList = {};
 
 var rememberSateliteVisibility= function() {
@@ -92,27 +142,37 @@ var rememberSateliteVisibility= function() {
   for (var j = 0; j < baseLenght; j++) {
     var layer = baseLayers.item(j);
     sateliteLayerList[layer.get('identifier')] = layer.getVisible();
+    //storeLayerVisibility(layer.get('identifier'), layer.getVisible());
   }
-var overlayLayers = sateliteOverlayGroup.getLayers();
+
+  var overlayLayers = sateliteOverlayGroup.getLayers();
   var overlayLenghth = overlayLayers.getLength();
   for (var j = 0; j < overlayLenghth; j++) {
     var layer = overlayLayers.item(j);
-    sateliteLayerList[layer.get('identifier')] = layer.getVisible();
+    sateliteLayerList[layer.get('identifier')] = layer.getVisible();	
+    //storeLayerVisibility(layer.get('identifier'), layer.getVisible());
   }
 }
 
 var restoreSateliteVisibility= function() {
+
   var baseLayers = sateliteBaseGroup.getLayers();
   var baseLenght = baseLayers.getLength();
   for (var j = 0; j < baseLenght; j++) {
     var layer = baseLayers.item(j);
     layer.setVisible(sateliteLayerList[layer.get('identifier')]);
+	//var visibility = queryLayerVisibility(layer.get('identifier'));
+	//layer.setVisible(visibility);
+	
+	
   }
 var overlayLayers = sateliteOverlayGroup.getLayers();
   var overlayLenghth = overlayLayers.getLength();
   for (var j = 0; j < overlayLenghth; j++) {
     var layer = overlayLayers.item(j);
     layer.setVisible(sateliteLayerList[layer.get('identifier')]);
+	//var visibility = queryLayerVisibility(layer.get('identifier'));
+	//layer.setVisible(visibility);
   }
 }
 }
@@ -176,13 +236,19 @@ function compressSateliteLayerName(name) {
 
 var offsetSateliteDate = function(days) 
 {
-
   var eoEvent = getActiveEoEvent();
   var currentDate = eoEvent.timeMap;
   currentDate.setDate(currentDate.getDate() + days);
-
   handleNewEoLayers();
+}
 
+var resetSateliteDate = function() 
+{
+  var eoEvent = getActiveEoEvent();
+  var resetDate = eoEvent.timeStart;
+  var currentDate = eoEvent.timeMap;
+  currentDate.setDate(resetDate.getDate());
+  handleNewEoLayers();
 }
 
 var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
@@ -203,16 +269,20 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
 
 
    var tileType = 'overlay';
-   tileOpacity = 0.6;
+   var tileOpacity = 0.4;
+   var tileIndex = 0;
    if (checkForSubstrings(layerName, ['no_data'])) {
         tileType = 'none';
     } else if (checkForSubstrings(layerName, ['this_is_overlay'])) {
   	tileType = 'overlay';
+	tileIndex = 3;
     } else if (checkForSubstrings(layerName, ['_TrueColor'])) {
-        tileType = 'base';
-	tileOpacity = 1.0;
+      tileType = 'base';
+	  tileOpacity = 1.0;
+	  tileIndex = 1;
     } else {
-        tileType = 'overlay';
+      tileType = 'overlay';
+	  tileIndex = 2;
     }
 
   
@@ -252,7 +322,7 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
     opacity: tileOpacity,	
   });
   wmtsTile.set('identifier',layerName);
-	
+  wmtsTile.setZIndex(2);
 	
   if( 'base' == tileType ) {
 	  sateliteBaseGroup.getLayers().push( wmtsTile ); 
