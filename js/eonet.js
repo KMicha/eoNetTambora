@@ -48,44 +48,46 @@ function loadEoNetEvents(mode, category) {
 	}
 }
 
-function loadEoNetLayers(categoryId, eoEvent) {
+function loadEoNetLayers(categoryId) { 
   $.getJSON( eoNetServer + "/layers/" + categoryId)
     .done(function( data ) {	
         eoNetLayers = data;
-	handleNewEoLayers(eoEvent);
+	handleNewEoLayers();
     });
 }
 
-function extractMapTime(startTs, endTs) {
-   var mapTime = (startTs + 0.5 * (endTs - startTs));
-   var mapTime = startTs;
-
-   var yyyy = mapTime.getFullYear().toString();
-   var mm = (mapTime.getMonth()+1).toString(); // getMonth() is zero-based
-   var dd  = mapTime.getDate().toString();
+function extractMapTime(mapTs) {
+   var yyyy = mapTs.getFullYear().toString();
+   var mm = (mapTs.getMonth()+1).toString(); // getMonth() is zero-based
+   var dd  = mapTs.getDate().toString();
    return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 }
 
-function handleNewEoLayers(eoEvent) {
+function handleNewEoLayers() { 
+  var eoEvent = getActiveEoEvent();
+  rememberSateliteVisibility();
   resetSateliteLayers();
   layerList = eoNetLayers['categories'][0]['layers'];
   for (layerIndex in layerList) {
     var layer = layerList[layerIndex]; 
-    var mapTimeStr = extractMapTime(eoEvent.timeStart,eoEvent.timeEnd);
+    var mapTimeStr = extractMapTime(eoEvent.timeMap);
     var mapUrl = layer.serviceUrl + "?time=" + mapTimeStr; 
     var layerParam = layer.parameters[0];
     if (layer.serviceTypeId == "WMTS_1_0_0") {
+      visibility = false;
       addSateliteLayer(mapUrl, layer.name, layerParam.FORMAT, layerParam.TILEMATRIXSET);
     }
   }
+  restoreSateliteVisibility();
   olMapSatelite.updateSize();
 }
 
 function handleNewEoEvents() {
   processEoNetEvents();
   redrawEoNetEvents();	
-  addEventsToGlobe(eoNetData.events);		
-  handleActiveEoEvent(eoNetData.events[0])
+  addEventsToGlobe(eoNetData.events);	
+  activeEoEvent = eoNetData.events[0];	
+  handleActiveEoEvent();
 }
 
 
@@ -102,10 +104,11 @@ function processEoNetEvents() {
     if (geometry) {
       eoNetData.events[key].latitude = geometry.latAvg;
       eoNetData.events[key].longitude = geometry.longAvg;
-	  eoNetData.events[key].ll = [geometry.longMin, geometry.latMin];
-	  eoNetData.events[key].ur = [geometry.longMax, geometry.latMax];
+      eoNetData.events[key].ll = [geometry.longMin, geometry.latMin];
+      eoNetData.events[key].ur = [geometry.longMax, geometry.latMax];
       eoNetData.events[key].timeStart = geometry.timeMin;
       eoNetData.events[key].timeEnd = geometry.timeMax;
+      eoNetData.events[key].timeMap = geometry.timeMin;
       eoNetData.events[key].days = (geometry.timeMax - geometry.timeMin) / (1000 * 60 * 60 * 24);
       eoNetData.events[key].year = geometry.timeMin.getFullYear();
       eoNetData.events[key].month = 1 + geometry.timeMin.getMonth();

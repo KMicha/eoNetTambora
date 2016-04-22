@@ -2,7 +2,6 @@ $(document).ready(function() {
    loadEoNetEvents("all");	
 });
 
-
 function checkForSubstrings(test, subStrList)
 {
   testString = test.toLowerCase(); 
@@ -58,20 +57,30 @@ function redrawEoNetEvents() {
   $('.eo-events a').bind('click', selectEoEvent);
 }
 
-function selectEoEvent() {
+{
+var activeEoEvent = null;
+
+var selectEoEvent = function() {
   var element = $(this);
   var key = parseInt(element.attr("data-key"));	
-  var eoEvent = getEoNetEventByKey(key);
-  handleActiveEoEvent(eoEvent);
+  activeEoEvent = getEoNetEventByKey(key);
+  handleActiveEoEvent();  
+}
+ var getActiveEoEvent = function() {
+  return activeEoEvent;
 }
 
-function handleActiveEoEvent(eoEvent) {
+}
+
+function handleActiveEoEvent() { 
+  var eoEvent = getActiveEoEvent();
   adjustCamera(eoEvent.longitude, eoEvent.latitude);
   adjustMap(eoEvent.longitude, eoEvent.latitude);
   adjustToBox(eoEvent.ll,eoEvent.ur);
-  loadEoNetLayers(eoEvent.catId, eoEvent); 
+  loadEoNetLayers(eoEvent.catId, eoEvent);  
   loadTmbEvents(eoEvent.longitude, eoEvent.latitude, eoEvent.param, eoEvent.color);
 }
+
 
 {
 var currTab = '#globe';

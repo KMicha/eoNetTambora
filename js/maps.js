@@ -11,6 +11,15 @@ $('#mapEvents').change( function() {
 	olMapEvents.updateSize();
 }); 
 
+
+$('.plusDay').click( function() {
+	offsetSateliteDate(+1);
+}); 
+$('.minusDay').click( function() {
+	offsetSateliteDate(-1);
+}); 
+
+
 {
 var olMapSatelite = null;	
 var sateliteBaseTile = null;
@@ -36,6 +45,7 @@ function createMapSatelite() {
       }
     })
   });
+  sateliteBaseTile.set('identifier','geographic_base_layer');
 
 
   sateliteBaseGroup = new ol.layer.Group({
@@ -72,6 +82,40 @@ olMapSatelite = new ol.Map({
 
 }
 
+{
+var sateliteLayerList = {};
+
+var rememberSateliteVisibility= function() {
+ //sateliteLayerList = {}; 
+  var baseLayers = sateliteBaseGroup.getLayers();
+  var baseLenght = baseLayers.getLength();
+  for (var j = 0; j < baseLenght; j++) {
+    var layer = baseLayers.item(j);
+    sateliteLayerList[layer.get('identifier')] = layer.getVisible();
+  }
+var overlayLayers = sateliteOverlayGroup.getLayers();
+  var overlayLenghth = overlayLayers.getLength();
+  for (var j = 0; j < overlayLenghth; j++) {
+    var layer = overlayLayers.item(j);
+    sateliteLayerList[layer.get('identifier')] = layer.getVisible();
+  }
+}
+
+var restoreSateliteVisibility= function() {
+  var baseLayers = sateliteBaseGroup.getLayers();
+  var baseLenght = baseLayers.getLength();
+  for (var j = 0; j < baseLenght; j++) {
+    var layer = baseLayers.item(j);
+    layer.setVisible(sateliteLayerList[layer.get('identifier')]);
+  }
+var overlayLayers = sateliteOverlayGroup.getLayers();
+  var overlayLenghth = overlayLayers.getLength();
+  for (var j = 0; j < overlayLenghth; j++) {
+    var layer = overlayLayers.item(j);
+    layer.setVisible(sateliteLayerList[layer.get('identifier')]);
+  }
+}
+}
 
 var resetSateliteLayers = function() {
 
@@ -88,7 +132,9 @@ var resetSateliteLayers = function() {
     var layer = overlayLayers.pop();
 	layer.setVisible(false);
   }
-  sateliteBaseTile.setVisible(true);
+  //sateliteBaseTile.setVisible(true);
+
+  //sateliteLayerList = {};
 
 }
 
@@ -128,6 +174,17 @@ function compressSateliteLayerName(name) {
 	return result;
 }
 
+var offsetSateliteDate = function(days) 
+{
+
+  var eoEvent = getActiveEoEvent();
+  var currentDate = eoEvent.timeMap;
+  currentDate.setDate(currentDate.getDate() + days);
+
+  handleNewEoLayers();
+
+}
+
 var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
   /*
   var wmsSource = new ol.source.TileWMS({
@@ -144,17 +201,18 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
 
 */
 
+
    var tileType = 'overlay';
    tileOpacity = 0.6;
    if (checkForSubstrings(layerName, ['no_data'])) {
-      tileType = 'none';
+        tileType = 'none';
     } else if (checkForSubstrings(layerName, ['this_is_overlay'])) {
   	tileType = 'overlay';
     } else if (checkForSubstrings(layerName, ['_TrueColor'])) {
-      tileType = 'base';
-	  tileOpacity = 1.0;
+        tileType = 'base';
+	tileOpacity = 1.0;
     } else {
-      tileType = 'overlay';
+        tileType = 'overlay';
     }
 
   
@@ -183,6 +241,7 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
     tileGrid: wmtsTileGrid
   });
 
+ 
   var uiName = compressSateliteLayerName(layerName);
   
   var wmtsTile = new ol.layer.Tile({
@@ -190,9 +249,9 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
     title: uiName,
     type: tileType,
     visible: false,
-	opacity: tileOpacity,	
+    opacity: tileOpacity,	
   });
-
+  wmtsTile.set('identifier',layerName);
 	
 	
   if( 'base' == tileType ) {
