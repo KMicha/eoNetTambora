@@ -23,10 +23,35 @@ html body {
  margin: 0 22px;
 }
 
-#olMapEvents, #olMapSatelite .layer-switcher.shown {
+#olMapEvents .layer-switcher.shown, #olMapSatelite .layer-switcher.shown {
 	font-size: 70%;	
     max-height: 500px;
 }
 
+
+#olControlDate {
+  top: 8px;
+  left: 3em;
+}
+
+#olControlDate button {
+	float:left;
+	margin: 3px 3px;
+}
+
+#olControlDate .currentDay {
+	margin: 3px 3px;
+}
+
+.dynatable-per-page {
+	float:right; 
+	margin: 2px;
+	
+}
+
+#tmbLogo {
+	position: relative;
+	top: 1.3em;
+}
 
 
