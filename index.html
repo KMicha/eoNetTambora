@@ -8,7 +8,6 @@
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css" type="text/css" rel="stylesheet" >
   <link href="//cdnjs.cloudflare.com/ajax/libs/ol3/3.15.1/ol.css" type="text/css" rel="stylesheet">
   <link href="./css/openlayers/ol3-layerswitcher.css" type="text/css" rel="stylesheet"/>
-  <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
   <link href="//cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.css" type="text/css" rel="stylesheet"/>	
   <link href="//cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.min.css" type="text/css" rel="stylesheet"/>	
   <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
@@ -35,7 +34,7 @@
     </div>
    </div> <!-- end md-6 -->
 
-   <div class="col-md-6"> <!-- Map & Globe Upper-Right Corner -->
+   <div class="col-md-6"> <!-- Tabbed Upper-Right Corner -->
     <ul class="nav nav-tabs">
      <li class="active"><a data-toggle="tab" href="#globe">Globe</a></li>
      <li><a data-toggle="tab" href="#mapEvents">Map Events</a></li>	
@@ -43,33 +42,50 @@
      <li><a data-toggle="tab" href="#about">About</a></li>
     </ul>
     <div id='tab-content' class="tab-content">
-	 <!-- Rendering Globe -->
-	 <div id="globe" class="tab-pane fade in active">
-	   <div id='rendering' class='urTabContent' ></div>
-     </div>
-	 <!-- Show Map -->
-     <div id="mapEvents" class="tab-pane fade">
-	   <div id="olMapEvents" class="olMapEvents urTabContent" ></div>
-     </div>
-	 <!-- Show Map -->
-     <div id="mapSatelite" class="tab-pane fade">
-	   <div id="olMapSatelite" class="olMapSatelite urTabContent"></div>
-          <div id="olControlDate" class="ol-unselectable ol-control">
-		    <span class="currentDay small">yyyy-mm-dd</span><br/>
-		    <button class="minusDay" type="button" title="Previous Day"><span class="glyphicon glyphicon-chevron-left"></span></button>
-		    <button class="resetDay" type="button" title="Reset Day" ><span class="glyphicon glyphicon-time"></span></button>
-		    <button class="plusDay" type="button" title="Next Day" ><span class="glyphicon glyphicon-chevron-right"></span></button>
-		  </div>
-     </div>	 
-	 
-     <!-- Show About -->
-     <div id="about" class="tab-pane fade">
-	   <div class='urTabContent'>
-         <h3>About</h3>
-         <p>Present & Past united</p>
-	   </div>
-     </div>
+      <div id="globe" class="tab-pane fade in active">
+      <div id='rendering' class='urTabContent' ></div>
     </div>
+    <div id="mapEvents" class="tab-pane fade">
+      <div id="olMapEvents" class="olMapEvents urTabContent" ></div>
+    </div>
+    <div id="mapSatelite" class="tab-pane fade">
+      <div id="olMapSatelite" class="olMapSatelite urTabContent"></div>
+      <div id="olControlDate" class="ol-unselectable ol-control">
+	<span class="currentDay small">yyyy-mm-dd</span><br/>
+	<button class="minusDay" type="button" title="Previous Day"><span class="glyphicon glyphicon-chevron-left"></span></button>
+	<button class="resetDay" type="button" title="Reset Day" ><span class="glyphicon glyphicon-time"></span></button>
+	<button class="plusDay" type="button" title="Next Day" ><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+    </div>	 
+    <div id="about" class="tab-pane fade">
+      <div class='urTabContent'>
+         <div class="row"><div class="col-md-12"><p>&nbsp;</p></div></div>
+         <div class="row">
+           <div class="col-md-6 col-md-offset-3 ">
+             <img src="images/nasa-logo.png" height="64px" alt="Nasa Logo"  />
+             <span class="glyphicon glyphicon-plus" style="font-size:32px;position:relative;top:10px"></span>
+             <img src="images/tambora-logo.png" height="64px" alt="Tambora Logo"  />
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-md-12 ">
+             <br/>
+             <p>Near real time data derrived from high technology measurements and imagery is combined with historical data extracted from diaries, chronicles, newspapers and other documents from centuries ago.</p>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-md-6 ">
+             <h4>Used APIs</h4>
+             <p>eonet,tambora</p>
+           </div>
+           <div class="col-md-6 ">
+             <h4>Used JS Libraries</h4>
+             <p>libraries jquery, three, dynatable, ol3, bootstrap, d3, crossfilter, dc</p>
+           </div>
+         </div>
+      </div>
+    </div>
+
    </div> <!-- end md-6 -->
   </div> <!-- end row -->
 
@@ -78,71 +94,84 @@
    <div class="col-md-12 "><!-- for better alignment -->
      <span id="tmbLogo" style="font-size:175%">
       <a href="https://www.tambora.org">Tamb<img src="images/tambora.ico" height="24px" alt="O"  style="position:relative; top:-2px;"/>ra</a>
+      <a class="tmbSearch" href="https://www.tambora.org"><span class="glyphicon glyphicon-search"></span></a> 
      </span>  
   </div>
-  </div> <!-- end row -->
+  </div> <!-- end UPPER row -->
 				
   <div class="row">
-   <div class="col-md-6 ">
+   <div class="col-md-6 "> <!-- table Lower-Right Corner-->
 
     <table id="tmb-data-table" class="table table-bordered small">
        <thead>
          <tr>
            <th data-dynatable-column="start">Date</th>
-		   <th data-dynatable-column="days">Duration (Days)</th>
-		   <th data-dynatable-column="distance">Distance</th>
-		   <th data-dynatable-column="location">Location</th>
-		   <th data-dynatable-column="id">Show</th>
+	   <th data-dynatable-column="days">Duration (Days)</th>
+	   <th data-dynatable-column="distance">Distance</th>
+	   <th data-dynatable-column="location">Location</th>
+	   <th data-dynatable-column="id">Show</th>
          </tr>
        </thead>
     </table>	
 	
 	
    </div>
-   <div class="col-md-6 ">
+  
+   <div class="col-md-6 "><!-- charts Lower-Left Corner -->
 
-	<div id="year-chart">
+    <div class="row">
+     <div class="col-md-6 ">
+      <div id="year-chart">
         <strong>Year</strong>
         <span class="reset" style="display: none;">range: <span class="filter"></span></span>
         <a class="reset" href="javascript:yearChart.filterAll();dc.redrawAll();" style="display: none;">Reset</a>
-
         <div class="clearfix"></div>
-    </div>	
-	
-    <div id="month-chart">
+      </div>
+     </div>	
+     <div class="col-md-3 ">	
+      <div id="month-chart">
         <strong>Month</strong>
         <a class="reset" href="javascript:monthChart.filterAll();dc.redrawAll();" style="display: none;">Reset</a>
-
         <div class="clearfix"></div>
-    </div>	
+      </div>	
+     </div>
+     <div class="col-md-3 ">	
+      <div id="index-chart">
+        <strong>Indices</strong>
+        <a class="reset" href="javascript:indexChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+        <div class="clearfix"></div>
+      </div>	
+     </div>
+    </div>
 
-	
-	<div id="dist-chart">
+    <div class="row"><div class="col-md-12"><p>&nbsp;</p></div></div>
+     
+    <div class="row">
+     <div class="col-md-6 ">	
+      <div id="dist-chart">
         <strong>Distance (km)</strong>
         <span class="reset" style="display: none;">range: <span class="filter"></span></span>
         <a class="reset" href="javascript:distChart.filterAll();dc.redrawAll();" style="display: none;">Reset</a>
-
         <div class="clearfix"></div>
-    </div>		
-	
-	<div id="days-chart">
+      </div>
+     </div>		
+     <div class="col-md-6 ">
+      <div id="days-chart">
         <strong>Duration (Days)</strong>
         <span class="reset" style="display: none;">range: <span class="filter"></span></span>
         <a class="reset" href="javascript:daysChart.filterAll();dc.redrawAll();" style="display: none;">Reset</a>
-
         <div class="clearfix"></div>
-    </div>
-	
-
+      </div>
+     </div>
+    </div>	
    </div>
-  </div> <!-- end row -->	
+  </div> <!-- end LOWER row -->	
 
  </div> <!-- end container-fluid -->
 	 
  <script src="//cdnjs.cloudflare.com/ajax/libs/ol3/3.15.1/ol.js" type="text/javascript"></script>
  <script src="./js/openlayers/ol3-layerswitcher.js" type="text/javascript"></script>
- <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
- <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>	
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" type="text/javascript"></script>	
  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
  <script src="//cdnjs.cloudflare.com/ajax/libs/pouchdb/5.3.2/pouchdb.min.js" type="text/javascript"></script>
  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" type="text/javascript"></script>
