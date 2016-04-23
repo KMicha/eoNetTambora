@@ -1,5 +1,5 @@
 // tmb-events
-var tmbBase   = "https://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/";
+var tmbBase   = "https://www.tambora.org/index.php/";
 var tmbServer = tmbBase + "grouping/event/eonet";
 var tmbSearch = tmbBase + "grouping/event/list";
 var tmbViewEvent = tmbBase + "grouping/event/show?event_id="; 
@@ -7,10 +7,6 @@ var tmbLimit  = 120;
 var tmbDistance = 2000; // km	
 var tmbGrouping = 6;
 var tmbData = null;
-
-
-
-// http://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/grouping/event/eonet?s[lng]=20&s[lat]=10
 
 function getEoNetData() {
   return eoNetData;
@@ -48,13 +44,8 @@ function loadTmbEvents(longitude, latitude, param, colorParent) {
 
 function processTmbEvents(colorParent) {
   $.each( tmbData.events, function( key, event ) {
-    //var category = getCategoryData(event);
-    //eoNetData.events[key].type = category.title;
-    //eoNetData.events[key].color = category.color;
     tmbData.events[key].from = 'tambora';
     tmbData.events[key].color = colorParent;
-    //eoNetData.events[key].param = category.param;
-    //eoNetData.events[key].image = category.image;	
     var geometry = getGeometryData(event);	
     if (geometry) {
       tmbData.events[key].latitude = geometry.latAvg;
@@ -66,5 +57,10 @@ function processTmbEvents(colorParent) {
       tmbData.events[key].month = 1 + geometry.timeMin.getMonth();
     }
   });
+}
+
+function showTmbSource() {
+	$('#myModal .modal-body').html('Hello!');
+	$('#myModal').modal('show');	
 }
 
