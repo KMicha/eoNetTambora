@@ -86,6 +86,7 @@ function handleNewEoEvents() {
   processEoNetEvents();
   redrawEoNetEvents();	
   addEventsToGlobe(eoNetData.events);	
+  addEventsToMap(eoNetData.events);
   activeEoEvent = eoNetData.events[0];	
   handleActiveEoEvent();
 }
@@ -232,7 +233,7 @@ function getCategoryData(event)
         color = "#0000FF";
         break;
        case 10:
-        param = "c[va]=10,11,12";
+        param = "c[va]=10,16,18,19";
         image = "storm.jpg";
         color = "#006400";
         break;
