@@ -1,8 +1,3 @@
-$(document).ready(function () {
-  createMapEvents();
-  createMapSatelite();  
-});	
-
 $('#mapSatelite').change( function() {
 	olMapSatelite.updateSize();
 }); 
@@ -33,7 +28,10 @@ var overlayGroup = null;
 var olCenter = ol.proj.fromLonLat([0, 0]);
 var olZoom = 5;	
 
-
+//var eoNetEventFeatures = [];
+//var tmbEventFeatures = [];
+var eoNetVectorEvents = null;
+var tmbVectorEvents = null;
 
 
 function createMapSatelite() {
@@ -92,65 +90,38 @@ olMapSatelite = new ol.Map({
 
 {
 
-
-var sateliteLayerSettings = new PouchDB('sateliteLayers');
-
 var storeLayerVisibility = function(layerName, visibility) {
   var eoEvent = getActiveEoEvent();
   var categoryId = eoEvent.categories[0].id;
-  var layerId = categoryId + ':' + layerName;
-  sateliteLayerSettings.get(layerId, function (error, doc) {
-    if (error) {
-	  var layerdb = {
-		"_id": layerId,
-		"name" : layerName, 
-		"visibility": visibility
-	  }
-	  sateliteLayerSettings.put(layerdb);
-    } else {
-      doc.visibility = visibility;
-	  sateliteLayerSettings.put(doc);
-    }
-  });
+  var layerId1 = 'eoNetTmb:Layer:' + categoryId + ':' + layerName;
+  var layerId2 = 'eoNetTmb:Layer:' + '-' + ':' + layerName;
+  Lockr.set(layerId1, visibility);  
+  Lockr.set(layerId2, visibility);
 }
 
 var queryLayerVisibility = function(layerName) {
   var eoEvent = getActiveEoEvent();
   var categoryId = eoEvent.categories[0].id;
-  var layerId = categoryId + ':' + layerName;
- 
-  sateliteLayerSettings.get(layerId, function (error, doc) {
-    if (error) {
-	    var results = sateliteLayerSettings.query(function(doc) {emit(doc.name)}, {startkey: layerName, include_docs: true});	
-        return false;     
-      } else {
-      return doc.visibility ;
-    }
-
-  });
-  var z = 2;
-  	    var results = sateliteLayerSettings.query(function(doc) {emit(doc.name)}, {startkey: layerName, include_docs: true});	
-        return false;  	
+  var layerId1 = 'eoNetTmb:Layer:' + categoryId + ':' + layerName;
+  var layerId2 = 'eoNetTmb:Layer:' + '-' + ':' + layerName;
+  var fallBack = Lockr.get(layerId2, false);
+  var visibility =  Lockr.get(layerId1, fallBack);
+  return visibility;
 }
 
-var sateliteLayerList = {};
-
 var rememberSateliteVisibility= function() {
- //sateliteLayerList = {}; 
   var baseLayers = sateliteBaseGroup.getLayers();
   var baseLenght = baseLayers.getLength();
   for (var j = 0; j < baseLenght; j++) {
     var layer = baseLayers.item(j);
-    sateliteLayerList[layer.get('identifier')] = layer.getVisible();
-    //storeLayerVisibility(layer.get('identifier'), layer.getVisible());
+    storeLayerVisibility(layer.get('identifier'), layer.getVisible());
   }
 
   var overlayLayers = sateliteOverlayGroup.getLayers();
   var overlayLenghth = overlayLayers.getLength();
   for (var j = 0; j < overlayLenghth; j++) {
     var layer = overlayLayers.item(j);
-    sateliteLayerList[layer.get('identifier')] = layer.getVisible();	
-    //storeLayerVisibility(layer.get('identifier'), layer.getVisible());
+    storeLayerVisibility(layer.get('identifier'), layer.getVisible());
   }
 }
 
@@ -160,19 +131,15 @@ var restoreSateliteVisibility= function() {
   var baseLenght = baseLayers.getLength();
   for (var j = 0; j < baseLenght; j++) {
     var layer = baseLayers.item(j);
-    layer.setVisible(sateliteLayerList[layer.get('identifier')]);
-	//var visibility = queryLayerVisibility(layer.get('identifier'));
-	//layer.setVisible(visibility);
-	
-	
+	var visibility = queryLayerVisibility(layer.get('identifier'));
+	layer.setVisible(visibility);
   }
 var overlayLayers = sateliteOverlayGroup.getLayers();
   var overlayLenghth = overlayLayers.getLength();
   for (var j = 0; j < overlayLenghth; j++) {
     var layer = overlayLayers.item(j);
-    layer.setVisible(sateliteLayerList[layer.get('identifier')]);
-	//var visibility = queryLayerVisibility(layer.get('identifier'));
-	//layer.setVisible(visibility);
+	var visibility = queryLayerVisibility(layer.get('identifier'));
+	layer.setVisible(visibility);
   }
 }
 }
@@ -193,8 +160,6 @@ var resetSateliteLayers = function() {
 	layer.setVisible(false);
   }
   //sateliteBaseTile.setVisible(true);
-
-  //sateliteLayerList = {};
 
 }
 
@@ -360,11 +325,32 @@ function createMapEvents() {
             url: 'http://tile.openstreetmap.de:8002/tiles/1.0.0/labels/en/{z}/{x}/{y}.png',
             crossOrigin: 'null'
           })
-        });		  
+        });	
+		
+  eoNetVectorEvents = new ol.source.Vector({
+        features: []
+      });
 
-  eventCanvasGroup = new ol.layer.Group({
+      var eoNetVectorLayer = new ol.layer.Vector({
+		   title: "eoNet",
+        source: eoNetVectorEvents
+      });
+	  
+  tmbVectorEvents = new ol.source.Vector({
+        features: []
+      });
+
+      var tmbVectorLayer = new ol.layer.Vector({
+		   title: "Tambora",
+        source: tmbVectorEvents
+      });		
+
+	  
+	
+
+  eventVectorGroup = new ol.layer.Group({
    title: 'Events',
-   layers: [ ]
+   layers: [eoNetVectorLayer, tmbVectorLayer ]
   });
 
   // Create a map containing two group layers
@@ -391,7 +377,7 @@ function createMapEvents() {
         'title': 'Base maps',
         layers: [ eventOsmTile, eventTmbTile]
       }), //end base group
-      eventCanvasGroup,
+      eventVectorGroup,
       new ol.layer.Group({
        'title': 'Info',
         layers: [ eventTitleTile ]
@@ -402,6 +388,72 @@ function createMapEvents() {
   olMapEvents.addControl(layerSwitcher);	  
 }
 
+
+
+var addEventsToMap = function (data) {
+  if (data.size > 0) {	
+    clearVectorEvents(data[0].from);
+  } else {
+	clearVectorEvents('tambora');  
+  }
+  
+  for (index in data) {
+    dataRow = data[index];
+    latitude = dataRow.latitude;
+    longitude = dataRow.longitude;
+    color = dataRow.color;
+	addVectorEvent(longitude, latitude, dataRow.from, color);
+  }	
+}
+	
+var clearVectorEvents = function(type) {
+	if ('tambora' == type) {
+		tmbVectorEvents.clear();
+	} else {
+		eoNetVectorEvents.clear();	
+	}
+	//redraw??
+}	
+	
+var addVectorEvent = function(longitude,latitude, type, color) {
+   var stroke = new ol.style.Stroke({color: 'black', width: 0.5});
+   var fill = new ol.style.Fill({color: color});	// color
+	
+   var style = null;
+	if ('tambora' == type) {
+     style = new ol.style.Style({
+          image: new ol.style.RegularShape({
+            fill: fill,
+            stroke: stroke,
+            points: 7,
+            radius: 4,
+            angle: Math.PI / 7
+          })
+        });
+	} else {
+		style = new ol.style.Style({
+          image: new ol.style.RegularShape({
+            fill: fill,
+            stroke: stroke,
+            points: 5,
+            radius: 7,
+            radius2: 3,
+            angle: 0
+          })
+		  });
+	}   
+	var coord = ol.proj.transform([longitude, latitude], 'EPSG:4326', 'EPSG:3857');
+	var feature = new ol.Feature(new ol.geom.Point(coord));
+    feature.setStyle(style);
+	if ('tambora' == type) {
+		tmbVectorEvents.addFeature(feature);		
+	} else {
+		eoNetVectorEvents.addFeature(feature);
+	}	
+	
+}
+
+	  
 
 var adjustToBox = function (ll, ur) {
 	var extent = ol.extent.boundingExtent([ll,ur]);

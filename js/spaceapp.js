@@ -1,6 +1,13 @@
 $(document).ready(function() {
+   Lockr.set("eoNetTmb:Layer:-:geographic_base_layer", true);
+   initTamboraCharts();  
+  
    loadEoNetEvents("all");	
-});
+   initGlobe(); 
+   createMapEvents();
+   createMapSatelite();    
+
+});; 
 
 function checkForSubstrings(test, subStrList)
 {

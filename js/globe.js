@@ -117,7 +117,7 @@ var adjustCamera = function(longitude, latitude) {
 }
 	
 
-$(document).ready(function () {
+var initGlobe = function () {
 		
 var renderDiv = document.getElementById("rendering");
 var renderHeight = $("#rendering").height();
@@ -158,7 +158,7 @@ var render = function () {
 };
 
 render();   
-});
+};
 
 }
 
