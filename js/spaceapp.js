@@ -79,6 +79,7 @@ function handleActiveEoEvent() {
   adjustToBox(eoEvent.ll,eoEvent.ur);
   loadEoNetLayers(eoEvent.catId, eoEvent);  
   loadTmbEvents(eoEvent.longitude, eoEvent.latitude, eoEvent.param, eoEvent.color);
+  adjustTmbSearchUrl(eoEvent.longitude, eoEvent.latitude, eoEvent.param); 
 }
 
 

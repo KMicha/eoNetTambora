@@ -1,6 +1,7 @@
 // tmb-events
 var tmbBase   = "https://tambora-test.ub.uni-freiburg.de/tambora-dev/index.php/";
 var tmbServer = tmbBase + "grouping/event/eonet";
+var tmbSearch = tmbBase + "grouping/event/list";
 var tmbViewEvent = tmbBase + "grouping/event/show?event_id="; 
 var tmbLimit  = 120;
 var tmbDistance = 2000; // km	
@@ -19,6 +20,11 @@ function getEoNetData() {
 
 function getEoNetDataByKey(key) {
   return eoNetData[key];
+}
+
+function adjustTmbSearchUrl(longitude, latitude, param, colorParent) {
+  var url = tmbSearch + "?" + param + "&s[lng]=" + longitude + "&s[lat]=" + latitude;
+  $("a.tmbSearch").attr('href', url);
 }
 
 function loadTmbEvents(longitude, latitude, param, colorParent) {
@@ -67,6 +73,7 @@ function processTmbEvents(colorParent) {
 
 var daysChart = null;
 var monthChart = null;
+var indexChart = null;
 var yearChart = null;
 var distChart = null;
 var tmbEventTable = null;
@@ -77,11 +84,11 @@ var initTamboraCharts = function() {
 	
   daysChart = dc.barChart('#days-chart');
   monthChart = dc.pieChart('#month-chart');
+  indexChart = dc.rowChart('#index-chart');
   yearChart = dc.barChart('#year-chart');
   distChart = dc.barChart('#dist-chart');
   tmbEventTable = dc.dataTable('.tmb-data-table');
-  // nasdaqCount = dc.dataCount('.dc-data-count');
-	
+
 }
 
 var updateChartData = function (events) {
@@ -94,7 +101,8 @@ var updateChartData = function (events) {
 			days: event.days,
 			month: event.month,
 			distance: event.distance,
-			location: event.location
+			location: event.location,
+                        index: event.index + ":" + event.value,
 		};
         chartData.push(result);
     });	
@@ -102,20 +110,25 @@ var updateChartData = function (events) {
     var ndx = crossfilter(chartData);
     var all = ndx.groupAll();	
 	
-	// Date Dimension
-	var dimStart = ndx.dimension(function (d) {
+    // Date Dimension
+    var dimStart = ndx.dimension(function (d) {
         return d.start;
     });
     // Dimension by month
     var dimMonth = ndx.dimension(function (d) {
         return d.month;
     });	
-	var monthGroup = dimMonth.group();
+    var monthGroup = dimMonth.group();
+    // Dimension by index
+    var dimIndex = ndx.dimension(function (d) {
+        return d.index;
+    });	
+    var indexGroup = dimIndex.group();
     // Dimension by days
     var dimDays = ndx.dimension(function (d) {
         return Math.round(d.days);
     });	
-	var daysGroup = dimDays.group();
+    var daysGroup = dimDays.group();
     // Dimension by year
     var dimYear = ndx.dimension(function (d) {
         return  Math.round(d.year);
@@ -130,19 +143,36 @@ var updateChartData = function (events) {
 	
 	
 	// MONTH
-	monthChart /* dc.pieChart('#quarter-chart', 'chartGroup') */
-     .width(180)
-     .height(180)
-     .radius(80)
-     .innerRadius(30)
+     monthChart /* dc.pieChart('#quarter-chart', 'chartGroup') */
+     .width(120)
+     .height(130)
+     .radius(60)
+     .innerRadius(20)
      .dimension(dimMonth)
      .group(monthGroup);
+
+    indexChart /* dc.rowChart('#day-of-week-chart', 'chartGroup') */
+        .width(120)
+        .height(140)
+        .margins({top: 20, left: 10, right: 10, bottom: 20})
+        .group(indexGroup)
+        .dimension(dimIndex)
+        //.ordinalColors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
+        .label(function (d) {
+            return d.key.split(':')[1];
+        })
+        // Title sets the row text
+        .title(function (d) {
+            return d.value;
+        })
+        .elasticX(true)
+        .xAxis().ticks(4);
 	
     // DAYS	
     daysChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
-        .width(420)
-        .height(180)
-        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .width(275)
+        .height(150)
+        .margins({top: 10, right: 20, bottom: 30, left: 20})
         .dimension(dimDays)
         .group(daysGroup)
         .elasticY(true)
@@ -164,9 +194,9 @@ var updateChartData = function (events) {
 		
 	// YEAR
     yearChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
-        .width(420)
-        .height(180)
-        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .width(275)
+        .height(150)
+        .margins({top: 10, right: 20, bottom: 30, left: 20})
         .dimension(dimYear)
         .group(yearGroup)
         .elasticY(true)
@@ -189,9 +219,9 @@ var updateChartData = function (events) {
 		
 	// Distance
     distChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
-        .width(420)
-        .height(180)
-        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .width(275)
+        .height(150)
+        .margins({top: 10, right: 20, bottom: 30, left: 20})
         .dimension(dimDist)
         .group(distGroup)
         .elasticY(true)
@@ -249,9 +279,9 @@ var updateChartData = function (events) {
 	
 	
 		
-	// Finally render all	
+    // Finally render all	
     dc.renderAll();
-	dc.redrawAll();
+    dc.redrawAll();
 	
 }
 
