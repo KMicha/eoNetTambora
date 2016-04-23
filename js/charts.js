@@ -199,6 +199,7 @@ var updateChartData = function (events) {
 		
     function RefreshTable() {
                 dc.events.trigger(function () {
+					
                     dynatable.settings.dataset.originalRecords = dimStart.top(Infinity);
                     dynatable.process();
                 });
@@ -208,7 +209,6 @@ var updateChartData = function (events) {
                 chartI.on("filtered", RefreshTable);
             }
 	RefreshTable();
-	
 	
 		
     // Finally render all	
