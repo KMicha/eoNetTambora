@@ -216,21 +216,8 @@ var resetSateliteDate = function()
   handleNewEoLayers();
 }
 
-var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
-  /*
-  var wmsSource = new ol.source.TileWMS({
-    url: urlLayer,
-    layer: layerName,
-    params: {'LAYERS': 'ne:ne_10m_admin_1_states_provinces_lines_shp'},
-    serverType: 'geoserver'
-    })
+var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix, serviceType) {
 
-  var wmsTile = new ol.layer.Tile({
-    title: layerName,
-    source: wmsSource
-  });
-
-*/
 
 
    var tileType = 'overlay';
@@ -250,6 +237,7 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
 	  tileIndex = 2;
     }
 
+ 
   
   var wmtsTileGrid = new ol.tilegrid.WMTS({
       origin: [-180, 90],
@@ -268,15 +256,30 @@ var addSateliteLayer = function(urlLayer, layerName, layerFormat, layerMatrix) {
       tileSize: 512
     });
 	
-  var wmtsSource = new ol.source.WMTS({
+var wmtsSource = null;
+ if ('WMS_1_1_1' == serviceType) {
+   wmtsSource = new ol.source.TileWMS({
+        url: urlLayer,
+        // layer: layerName,
+        params: {
+            'LAYERS': layerName,
+            'VERSION': '1.1.1',
+            'FORMAT': layerFormat,
+            'TILED': true
+        },
+        // tileGrid: tileGrid,
+        serverType: 'geoserver'
+    })
+ } else {
+  wmtsSource = new ol.source.WMTS({
     url: urlLayer,
     layer: layerName,
     format: layerFormat,
     matrixSet: layerMatrix,
     tileGrid: wmtsTileGrid
-  });
+    });
+  }
 
- 
   var uiName = compressSateliteLayerName(layerName);
   
   var wmtsTile = new ol.layer.Tile({

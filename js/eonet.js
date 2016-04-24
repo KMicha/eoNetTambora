@@ -72,10 +72,14 @@ function handleNewEoLayers() {
     var layer = layerList[layerIndex]; 
     var mapTimeStr = extractMapTime(eoEvent.timeMap);
     var mapUrl = layer.serviceUrl + "?time=" + mapTimeStr; 
-	$('#olControlDate .currentDay').html(mapTimeStr);
+    $('#olControlDate .currentDay').html(mapTimeStr);
     var layerParam = layer.parameters[0];
-    if (layer.serviceTypeId == "WMTS_1_0_0") {
-      addSateliteLayer(mapUrl, layer.name, layerParam.FORMAT, layerParam.TILEMATRIXSET);
+    if ((layer.serviceTypeId == "WMTS_1_0_0") || (layer.serviceTypeId == "WMS_1_1_1")) {
+      addSateliteLayer(mapUrl, layer.name, layerParam.FORMAT, layerParam.TILEMATRIXSET, layer.serviceTypeId);
+    } else {
+      console.log(layer.serviceTypeId);
+      console.log(mapUrl);
+      console.log(layer.name);
     }
   }
   restoreSateliteVisibility();
