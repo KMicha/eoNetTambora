@@ -32,6 +32,7 @@ var updateChartData = function (events) {
 			distance: event.distance,
 			location: event.location,
                         index: event.index + ":" + event.value,
+                        sources: event.sources,
 		};
         chartData.push(result);
     });	
@@ -192,8 +193,11 @@ var updateChartData = function (events) {
                     return Math.round(record.days ); },					
                   "distance": function (record, tr) {
                     return Math.round(record.distance * 10.0) / 10.0; },
-				  "id": function (record, tr) {
-                    return "<a href='"+tmbViewEvent+record.id+"'><span class='glyphicon glyphicon-eye-open'></span></a>"; },
+		  "id": function (record, tr) {
+                      var urlEvent = "<a href='"+tmbViewEvent+record.id+"'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                      var urlSources = buildEoNetSources(record.sources);
+                      return urlEvent+urlSources;
+                    },
                 }
             }).data('dynatable');	
 		
