@@ -167,6 +167,16 @@ function compressSateliteLayerName(name) {
 	var replacements = {
 		'SurfaceReflectance':'Surface Reflectance',
 		'CorrectedReflectance':'Corrected Reflectance',
+                'mortality-risks-distribution':'Mortality Risks',
+                'hazard-frequency-distribution':'Hazard Frequency',
+                'MOD_LSTAN_D':'Mod Land Surface Temp Night',
+                'MOD_LSTAD_D':'Mod Land Surface Temp Day',
+                'AURA_NO':'Aura NO',
+                'D_CLD_FR':'D CLD FR',
+                'D_LSTNI':'Land Surface Temp Night I',
+                'D_LSTDI':'Land Surface Temp Day I',
+                'D_LSTNA':'Land Surface Temp Night A',
+                'D_LSTDA':'Land Surface Temp Day A', 
 		'_Chlorophyll_A':' Chlorophyll A',
 		'_Bands':' Bands: ',
 		'_Index':' Index',
@@ -174,6 +184,8 @@ function compressSateliteLayerName(name) {
 		'_Sea_Ice':' Sea Ice',
 		'Snow_Cover':'Snow Cover',
 		'Value_Added_':'Value Added ',
+                'cyclone':'Cyclone',
+                'flood':'Flood',
 		'Score_Ocean':'Score Ocean',
 		'Total_Column':'Total Column',
 		'_Brightness_Temp_':' Brightness Temp ',
@@ -188,9 +200,13 @@ function compressSateliteLayerName(name) {
 		'VIIRS_SNPP_':'',
 		'_TrueColor':'',
 		'MODIS_':'',
-	    '_':' ',
+                'ndh-':'',
+	        '_':' ',
 		'_':' ',
+                '-':' ',
+                '-':' ',
 		'  ':' '
+        
 	};
 	var result = name;
 	for (replIndex in replacements) {

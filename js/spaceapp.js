@@ -21,10 +21,21 @@ function checkForSubstrings(test, subStrList)
   return false;
 }
 
+function buildEoNetSources(sources) {
+  var sourceLinks = '';
+  for(sourceIndex in sources) {
+     var source = sources[sourceIndex];
+     sourceLinks += "<a href='"+source.url+"' ><span class='glyphicon glyphicon-book'></a>";
+  }
+  return sourceLinks;
+}
+
 function buildEoNetEvent(key, event) {
  eoItem = "<div class='side-box col-md-4 col-xs-4' style='height:170px;'>";
   var glyph = "<span class='glyphicon glyphicon-record' style='color: "+event.color+";'></span> ";
-  eoItem += "<h5> "+glyph+event.type+"</h5>"; 
+  var source = buildEoNetSources(event.sources);
+  eoItem += "<h5> "+glyph+event.type+source+"</h5>"; 
+  
 
   eoItem += "<a href='#' data-key="+key+" data-param="+event.param+">";
   eoItem += "<div style='margin-bottom: 2px;' class='thumbnail'>";  
