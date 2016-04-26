@@ -12,6 +12,8 @@ Link to [tambora.org](https://www.tambora.org)
 
 https://2016.spaceappschallenge.org/challenges/earth/earth-live/projects/eonettambora
 
+https://www.youtube.com/watch?v=iABN6v3zN20
+
 What happened the last weeks and did this happened centuries(!) ago as well?
 
 Nasa's eoNet near real time data derived from high technology measurement and satellite imagery is combined with tambora.org's historical data extracted from diaries, chronicles, newspapers and other documents from centuries ago.
