@@ -7,8 +7,8 @@ Nasa's Space App Challange 2016
 
 Link to [tambora.org](https://www.tambora.org)
 
-![alt text](https://github.com/KMicha/eoNetTambora/raw/master/images/nasa-logo.png "Tambora Logo")
-![alt text](https://github.com/KMicha/eoNetTambora/raw/master/images/tambora-logo-red.png "Tambora Logo")
+![alt text](https://github.com/KMicha/eoNetTambora/raw/master/images/nasa.ico "Tambora Logo")
+![alt text](https://github.com/KMicha/eoNetTambora/raw/master/images/tambora.ico "Tambora Logo")
 
 https://2016.spaceappschallenge.org/challenges/earth/earth-live/projects/eonettambora
 
