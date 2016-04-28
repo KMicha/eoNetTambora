@@ -98,20 +98,22 @@
            <div class="col-md-12 ">
 <p class="small">What happened the last weeks and did this happened centuries(!) ago as well?<p>
 
-<p class="small">Nasa's eoNet near real time data derived from high technology measurement and satellite imagery is combined with tambora.org's historical data extracted from diaries, chronicles, newspapers and other documents from centuries ago.<br/>Satellite images for present events can be selected and stepped through time.<br/>It visualizes the spatial and temporal distribution of hazard events today as well as corresponding events in the past and thereby allows to compare those in quantity and intensity. This allows anybody to examine the impact of climate change on a global and local level.</p> 
+<p class="small">Nasa's eoNet near real time data derived from high technology measurement and satellite imagery is combined with tambora.org's historical data extracted from diaries, chronicles, newspapers and other documents from centuries ago.
+<br/>Satellite images for present events can be selected and stepped through time.
+<br/>It visualizes the spatial and temporal distribution of hazard events today as well as corresponding events in the past and thereby allows to compare those in quantity and intensity. 
+This allows anybody to examine the impact of climate change on a global and local level.</p> 
 	
           </div>
          </div>
          <div class="row">
-           <div class="col-md-6 ">
+           <div class="col-sm-4 ">
              <p class="small">Used APIs</p>
 			 <ul class="small">
 			  <li><a href="http://eonet.sci.gsfc.nasa.gov/">eoNet from Nasa</a></li>
 			  <li><a href="https://www.tambora.org/index.php/site/page?view=about">Tambora from University Freiburg</a></li>
 			 </ul>
-
            </div>
-           <div class="col-md-6 ">
+           <div class="col-sm-4 ">
              <p class="small">Used JS Libraries</p>
 			 <ul class="small">
 			  <li><a href="https://jquery.com/">jquery</a>, <a href="http://getbootstrap.com/">bootstrap</a></li>
@@ -121,6 +123,13 @@
 			  <li><a href="http://threejs.org/">three</a>, <a href="https://github.com/tsironis/lockr">lockr</a></li>
 			 </ul>
            </div>
+           <div class="col-sm-4 ">
+             <p class="small">Free Images</p>
+			 <ul class="small">
+			  <li><a href="https://pixabay.com/">pixabay</a></li>
+			 </ul>
+           </div>
+
          </div>
       </div>
     </div>
@@ -146,7 +155,7 @@
          <tr>
            <th data-dynatable-column="start">Date</th>
 	        <th data-dynatable-column="days">Duration (Days)</th>
-	        <th data-dynatable-column="distance">Distance</th>
+	        <th data-dynatable-column="distance">Distance (km)</th>
 	        <th data-dynatable-column="location">Location</th>
 	        <th data-dynatable-column="index">Indices</th>	   
 	        <th data-dynatable-column="id">Show</th>
@@ -221,7 +230,8 @@
  <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.5/dc.min.js" type="text/javascript"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.js" type="text/javascript"></script>
  <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js" type="text/javascript"></script>
- <script src="js/three/Tween.js" type="text/javascript"></script>	
+ <script src="http://cdnjs.cloudflare.com/ajax/libs/tweenjs/0.6.1/tweenjs.min.js" type="text/javascript"></script>
+ <script src="js/three/Tween.js" type="text/javascript"></script>
  <script src="js/three/TrackballControls.js" type="text/javascript"></script>
  <script src="js/d3/colorbrewer.js" type="text/javascript"></script>
  <script src="js/globe.js" type="text/javascript"></script> 
