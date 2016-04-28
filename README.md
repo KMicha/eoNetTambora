@@ -1,6 +1,8 @@
 # eoNetTambora
 Nasa's EONet meets Tambora.org
 
+![alt text](https://github.com/KMicha/eoNetTambora/raw/master/images/eonet0.png "Screenshot")
+
 Nasa's Space App Challange 2016
 
 * [Run website here](http://rawgit.com/KMicha/eoNetTambora/master/index.html)
