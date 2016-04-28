@@ -186,7 +186,7 @@ var updateChartData = function (events) {
                     perPageDefault: 8,
                     perPageOptions: [2, 3, 4, 5, 8, 10, 15, 20, 30, 50, 80, 100]
                 },
-				writers: {
+                writers: {
                   "start": function (record, tr) {
                     return extractMapTime(record.start); },
                   "days": function (record, tr) {
@@ -194,7 +194,7 @@ var updateChartData = function (events) {
                   "distance": function (record, tr) {
                     return Math.round(record.distance * 10.0) / 10.0; },
 		  "id": function (record, tr) {
-                      var urlEvent = "<a href='"+tmbViewEvent+record.id+"'><span class='glyphicon glyphicon-eye-open'></span></a>";
+                      var urlEvent = "<a href='"+tmbViewEvent+record.id+"'><span class='glyphicon glyphicon-eye-open'></span></a> ";
                       var urlSources = buildEoNetSources(record.sources);
                       return urlEvent+urlSources;
                     },

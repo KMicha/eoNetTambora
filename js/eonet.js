@@ -82,7 +82,7 @@ function handleNewEoLayers() {
       console.log(layer.name);
     }
   }
-  restoreSateliteVisibility();
+  restoreSateliteVisibility(); 
   olMapSatelite.updateSize();
 }
 

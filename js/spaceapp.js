@@ -79,12 +79,15 @@ function redrawEoNetEvents() {
 var activeEoEvent = null;
 
 var selectEoEvent = function() {
+  rememberSateliteVisibility();
   var element = $(this);
   var key = parseInt(element.attr("data-key"));	
   activeEoEvent = getEoNetEventByKey(key);
-  handleActiveEoEvent();  
+  restoreSateliteVisibility(); 
+  handleActiveEoEvent(); 
 }
- var getActiveEoEvent = function() {
+
+var getActiveEoEvent = function() {
   return activeEoEvent;
 }
 
