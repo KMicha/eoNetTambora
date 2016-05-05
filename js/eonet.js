@@ -110,15 +110,9 @@ function processEoNetEvents() {
       eoNetData.events[key].longitude = geometry.longAvg;
       eoNetData.events[key].ll = [geometry.longMin, geometry.latMin];
       eoNetData.events[key].ur = [geometry.longMax, geometry.latMax];
-      // eoNetData.events[key].timeStart = new Date();
-      // eoNetData.events[key].timeStart.setDate(geometry.timeMin.getDate());
       eoNetData.events[key].timeStart = geometry.timeMin;
-      // eoNetData.events[key].timeEnd = new Date();
-      // eoNetData.events[key].timeEnd.setDate(geometry.timeMax.getDate());
       eoNetData.events[key].timeEnd = geometry.timeMax;
-      // eoNetData.events[key].timeMap = new Date();
-      // eoNetData.events[key].timeMap.setDate(geometry.timeMin.getDate());
-      eoNetData.events[key].timeMap = geometry.timeMin;
+      eoNetData.events[key].timeMap = geometry.timeMap;
       eoNetData.events[key].days = (geometry.timeMax - geometry.timeMin) / (1000 * 60 * 60 * 24);
       eoNetData.events[key].year = geometry.timeMin.getFullYear();
       eoNetData.events[key].month = 1 + geometry.timeMin.getMonth();
@@ -143,13 +137,18 @@ function getGeometryData(event) {
     var dateTimeParts = timestamp.split('T');
     var timeParts = dateTimeParts[1].split(':');
     var dateParts = dateTimeParts[0].split('-');
-    var newTime = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+    var newMin = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+    var newMax = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+    var newMap = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
 
-    if (newTime > timeMax) {
-      timeMax = newTime;
+    if (newMax > timeMax) {
+      timeMax = newMax;
     }
-    if (newTime < timeMin) {
-      timeMin = newTime;
+    if (newMin < timeMin) {
+      timeMin = newMin;
+    }
+    if (newMap < timeMap) {
+      timeMap = newMap;
     }
   }
 
@@ -196,6 +195,7 @@ function getGeometryData(event) {
   return {
       timeMin: timeMin,
       timeMax: timeMax,
+      timeMap: timeMap,
       latMin: latMin,
       latMax: latMax,
       longMin: longMin,
