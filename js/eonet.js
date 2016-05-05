@@ -123,6 +123,7 @@ function processEoNetEvents() {
 function getGeometryData(event) {
   var timeMin = 10E14;
   var timeMax = -10E14;
+  var timeMap = 10E14;
   var latMin = 1000.0;
   var latMax = -1000.0;
   var longMin = 1000.0;
