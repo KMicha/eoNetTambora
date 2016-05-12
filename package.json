@@ -1,0 +1,25 @@
+{
+  "name": "eonettambora",
+  "version": "1.0.0",
+  "description": "Nasa's eonet data meets tambora.org",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KMicha/eoNetTambora.git"
+  },
+  "keywords": [
+    "eonet",
+    "tambora",
+    "nasa",
+    "climate"
+  ],
+  "author": "Michael Kahle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KMicha/eoNetTambora/issues"
+  },
+  "homepage": "https://github.com/KMicha/eoNetTambora#readme"
+}
