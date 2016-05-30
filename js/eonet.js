@@ -50,7 +50,7 @@ function loadEoNetEvents(mode, category) {
 }
 
 function loadEoNetLayers(categoryId) { 
-  $.getJSON( eoNetServer + "/layers/" + categoryId)
+  $.getJSON( eoNetServer + "/layers?category=" + categoryId)
     .done(function( data ) {	
         eoNetLayers = data;
 	handleNewEoLayers();
