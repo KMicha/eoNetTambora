@@ -1,5 +1,5 @@
 // eo-events
-//var eoNetServer = "http://eonet.sci.gsfc.nasa.gov/api/v2.1";
+//var eoNetServer = "http://eonet.sci.gsfc.nasa.gov/api/v2.1";   // http not working in combination with https so use proxy
 var eoNetServer = "https://www.tambora.org/index.php/libraries/eonet";
 var eoNetLimit  = 120;	
 var eoNetOffset = 0;
@@ -50,6 +50,7 @@ function loadEoNetEvents(mode, category) {
 }
 
 function loadEoNetLayers(categoryId) { 
+  //  use  **  eoNetServer + "/layers/category/" + categoryId **  when using  eonet.sci.gsfc.nasa.gov
   $.getJSON( eoNetServer + "/layers?category=" + categoryId)
     .done(function( data ) {	
         eoNetLayers = data;
