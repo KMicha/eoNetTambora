@@ -1,5 +1,6 @@
 // eo-events
-var eoNetServer = "http://eonet.sci.gsfc.nasa.gov/api/v2.1";
+//var eoNetServer = "http://eonet.sci.gsfc.nasa.gov/api/v2.1";
+var eoNetServer = "https://www.tambora.org/index.php/libraries/eonet";
 var eoNetLimit  = 120;	
 var eoNetOffset = 0;
 var eoNetGrouping = 6;
